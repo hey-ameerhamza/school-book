@@ -50,7 +50,6 @@ Study resources are generated with one request. Extracted material is reused for
 
 ## Project structure
 
-<<<<<<< HEAD
 ```text
 school-book/
 ├── index.html          Dashboard and application interface
@@ -73,7 +72,7 @@ school-book/
 - A Google Gemini API key
 
 ### 1. Clone the project
-=======
+
 ## Project Structure
 
 ```
