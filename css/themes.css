@@ -1,0 +1,29 @@
+/* Theme colour variables. The page uses the data-theme attribute on <html>. */
+:root, html[data-theme="light"] {
+  --bg: #f4f6fb; --text: #1b2433; --muted: #5a6577;
+  --card-bg: #ffffff; --input-bg: #ffffff; --border: #cdd5e2;
+  --header-bg: #1e40af; --header-text: #ffffff;
+  --accent: #2563eb; --accent-text: #ffffff; --link: #1d4ed8;
+  --btn-alt: #eef2fa; --ok: #15803d; --danger: #b91c1c;
+}
+html[data-theme="dark"] {
+  --bg: #0f172a; --text: #e5e9f2; --muted: #9aa6bd;
+  --card-bg: #1e293b; --input-bg: #0f172a; --border: #3a4760;
+  --header-bg: #020617; --header-text: #f1f5f9;
+  --accent: #60a5fa; --accent-text: #0b1220; --link: #93c5fd;
+  --btn-alt: #27344d; --ok: #22c55e; --danger: #ef4444;
+}
+html[data-theme="sepia"] {
+  --bg: #f4ecd8; --text: #3b2f1e; --muted: #6f5f47;
+  --card-bg: #fbf5e6; --input-bg: #fffaf0; --border: #d6c7a1;
+  --header-bg: #7a5a2e; --header-text: #fff8e8;
+  --accent: #9a6b2f; --accent-text: #ffffff; --link: #7a4a12;
+  --btn-alt: #efe3c6; --ok: #3f6b2a; --danger: #a22a1f;
+}
+html[data-theme="ocean"] {
+  --bg: #e6f4f6; --text: #0f2e36; --muted: #416670;
+  --card-bg: #f6fcfd; --input-bg: #ffffff; --border: #a7d2da;
+  --header-bg: #0e6173; --header-text: #ffffff;
+  --accent: #0e7c92; --accent-text: #ffffff; --link: #0a5f73;
+  --btn-alt: #d4ecf0; --ok: #177a4f; --danger: #b42318;
+}
