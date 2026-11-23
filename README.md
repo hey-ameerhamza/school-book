@@ -87,10 +87,6 @@ school-book/
 |-- README.md
 ```
 
-## Wireframes
-
-Hand-drawn wireframes for every page are in the [`wireframes/`](wireframes) folder.
-
 ## Getting Started
 
 ```bash
@@ -120,7 +116,7 @@ Then open `index.html` in any modern browser. No build step, server or installat
 | Member | Role |
 | --- | --- |
 | **M. Ameer Hamza** | HTML, CSS, JavaScript development, team lead and research |
-| **Umer Ahmad Khan** | Editing, research, LaTeX and project storyteller |
+| **Umar Ahmad Khan** | Editing, research, LaTeX and project storyteller |
 | **M. Waris Shah** | LaTeX (Overleaf), HTML, CSS and research |
 
 ## Course Information
