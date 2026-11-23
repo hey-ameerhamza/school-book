@@ -64,18 +64,6 @@ Home
 | Report | LaTeX on Overleaf |
 | Hosting | GitHub Pages |
 
-## Design System
-
-| Item | Value |
-| --- | --- |
-| Main colour | Navy blue `#1F3A5F` |
-| Accent colour | Orange `#E07A1F` |
-| Light theme | Background `#FFFFFF`, text `#222222` |
-| Dark theme | Background `#1E222B`, text `#E8EAED` |
-| Sepia theme | Background `#F4ECD8`, text `#5B4636` |
-| Heading font | Poppins (bold) |
-| Body font | Open Sans, 16 px |
-
 ## Project Structure
 
 ```
@@ -84,7 +72,7 @@ school-book/
 |-- notes.html
 |-- flashcards.html
 |-- focus.html
-|-- important.html
+|-- important_points.html
 |-- settings.html
 |-- css/
 |   |-- style.css
@@ -96,7 +84,6 @@ school-book/
 |   |-- timer.js
 |   |-- theme.js
 |-- images/
-|-- wireframes/
 |-- README.md
 ```
 
