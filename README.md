@@ -50,6 +50,7 @@ Study resources are generated with one request. Extracted material is reused for
 
 ## Project structure
 
+<<<<<<< HEAD
 ```text
 school-book/
 ├── index.html          Dashboard and application interface
@@ -72,6 +73,32 @@ school-book/
 - A Google Gemini API key
 
 ### 1. Clone the project
+=======
+## Project Structure
+
+```
+school-book/
+|-- index.html
+|-- notes.html
+|-- flashcards.html
+|-- focus.html
+|-- important_points.html
+|-- settings.html
+|-- css/
+|   |-- style.css
+|   |-- themes.css
+|-- js/
+|   |-- main.js
+|   |-- notes.js
+|   |-- flashcards.js
+|   |-- timer.js
+|   |-- theme.js
+|-- images/
+|-- README.md
+```
+
+## Getting Started
+>>>>>>> c513052f2d3b3487ba01f1081ff4ff6b44a6a75d
 
 ```bash
 git clone https://github.com/hey-ameerhamza/school-book.git
@@ -98,9 +125,17 @@ PORT=3000
 
 ### 3. Start the application
 
+<<<<<<< HEAD
 ```bash
 npm start
 ```
+=======
+| Member | Role |
+| --- | --- |
+| **M. Ameer Hamza** | HTML, CSS, JavaScript development, team lead and research |
+| **Umar Ahmad Khan** | Editing, research, LaTeX and project storyteller |
+| **M. Waris Shah** | LaTeX (Overleaf), HTML, CSS and research |
+>>>>>>> c513052f2d3b3487ba01f1081ff4ff6b44a6a75d
 
 Open [http://localhost:3000](http://localhost:3000) in your browser.
 
