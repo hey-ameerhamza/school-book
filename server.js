@@ -20,7 +20,9 @@ try {
 }
 
 const port = Number(process.env.PORT || 3000);
-const apiKey = process.env.GEMINI_API_KEY || "";
+const apiKeyValue = process.env.GEMINI_API_KEY || "";
+const apiKeyPlaceholder = /^(replace[_-]?with.*|your[_-]?api[_-]?key.*|your_api_key_here)$/i.test(apiKeyValue);
+const apiKey = apiKeyPlaceholder ? "" : apiKeyValue.trim();
 const model = process.env.GEMINI_MODEL || "gemini-2.5-flash";
 const root = __dirname;
 
