@@ -97,7 +97,7 @@ school-book/
 ```
 
 ## Getting Started
->>>>>>> c513052f2d3b3487ba01f1081ff4ff6b44a6a75d
+
 
 ```bash
 git clone https://github.com/hey-ameerhamza/school-book.git
@@ -124,17 +124,17 @@ PORT=3000
 
 ### 3. Start the application
 
-<<<<<<< HEAD
+
 ```bash
 npm start
 ```
-=======
+
 | Member | Role |
 | --- | --- |
 | **M. Ameer Hamza** | HTML, CSS, JavaScript development, team lead and research |
 | **Umar Ahmad Khan** | Editing, research, LaTeX and project storyteller |
 | **M. Waris Shah** | LaTeX (Overleaf), HTML, CSS and research |
->>>>>>> c513052f2d3b3487ba01f1081ff4ff6b44a6a75d
+
 
 Open [http://localhost:3000](http://localhost:3000) in your browser.
 
