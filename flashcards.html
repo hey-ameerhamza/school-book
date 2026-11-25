@@ -1,1 +1,42 @@
-<!DOCTYPE html><html><head><meta charset="UTF-8"><meta http-equiv="refresh" content="0; url=index.html"><title>SchoolBook</title></head><body><a href="index.html">Open SchoolBook</a></body></html>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Review your SchoolBook study flashcards.">
+  <meta http-equiv="refresh" content="0; url=index.html#flashcards">
+  <link rel="shortcut icon" href="icons/logo.png" type="image/x-icon">
+  <title>Flashcards — SchoolBook</title>
+</head>
+<body>
+  <template data-app-view>
+    <section class="view" id="flashcardsView">
+      <div class="view-toolbar">
+        <div><p class="section-label">Practice</p><h2>Flashcards</h2></div>
+        <select class="compact-select" id="flashcardMaterial"></select>
+      </div>
+      <div class="study-layout">
+        <div class="flashcard-stage">
+          <div class="flashcard" id="flashcard" tabindex="0" role="button" aria-label="Flip flashcard">
+            <div class="flashcard-tag" id="flashcardTag">Flashcard</div>
+            <p id="flashcardText">Add study material to generate flashcards.</p>
+            <span class="flip-hint">Tap to flip</span>
+          </div>
+          <div class="study-controls">
+            <button class="icon-button" id="previousCard" aria-label="Previous card">←</button>
+            <span id="flashcardCounter">0 / 0</span>
+            <button class="icon-button" id="nextCard" aria-label="Next card">→</button>
+          </div>
+        </div>
+        <aside class="study-side">
+          <p class="section-label">Progress</p>
+          <div class="progress-ring"><span id="progressPercent">0%</span></div>
+          <button class="primary-button full" id="knownCard">I knew this</button>
+          <button class="secondary-button full" id="reviewCard">Review again</button>
+        </aside>
+      </div>
+    </section>
+  </template>
+  <p>Opening flashcards… <a href="index.html#flashcards">Continue</a></p>
+</body>
+</html>

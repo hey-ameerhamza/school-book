@@ -1,1 +1,31 @@
-<!DOCTYPE html><html><head><meta charset="UTF-8"><meta http-equiv="refresh" content="0; url=index.html"><title>SchoolBook</title></head><body><a href="index.html">Open SchoolBook</a></body></html>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Read your SchoolBook smart notes and summaries.">
+  <meta http-equiv="refresh" content="0; url=index.html#notes">
+  <link rel="shortcut icon" href="icons/logo.png" type="image/x-icon">
+  <title>Smart Notes — SchoolBook</title>
+</head>
+<body>
+  <template data-app-view>
+    <section class="view" id="notesView">
+      <div class="view-toolbar">
+        <div><p class="section-label">Generated resources</p><h2>Smart Notes</h2></div>
+        <select class="compact-select" id="notesMaterial"></select>
+      </div>
+      <div class="notes-layout">
+        <div class="tab-list" role="tablist">
+          <button class="tab active" data-note-tab="smartNotes">Smart notes</button>
+          <button class="tab" data-note-tab="summary">Summary</button>
+          <button class="tab" data-note-tab="keyPoints">Key points</button>
+          <button class="tab" data-note-tab="importantQuestions">Important questions</button>
+        </div>
+        <article class="notes-paper" id="notesContent"></article>
+      </div>
+    </section>
+  </template>
+  <p>Opening smart notes… <a href="index.html#notes">Continue</a></p>
+</body>
+</html>

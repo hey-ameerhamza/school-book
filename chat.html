@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Ask SchoolBook AI questions about your study material.">
+  <meta http-equiv="refresh" content="0; url=index.html#chat">
+  <link rel="icon" type="image/x-icon" href="icons/logo.png">
+  <title>AI Chat — SchoolBook</title>
+</head>
+<body>
+  <template data-app-view>
+    <section class="view" id="chatView">
+      <div class="chat-layout">
+        <aside class="chat-sidebar">
+          <p class="section-label">Study context</p>
+          <select class="compact-select full" id="chatMaterial"></select>
+          <button class="secondary-button full" id="newChat">+ New conversation</button>
+        </aside>
+        <div class="chat-panel">
+          <div class="chat-messages" id="chatMessages">
+            <div class="chat-empty">
+              <span class="ai-orb"><img src="icons/ai_chat.png" alt=""></span>
+              <h3>Ask about your study material</h3>
+              <p>Get a clear answer in plain language.</p>
+              <div class="suggestion-grid">
+                <button data-question="Explain the main idea in simple words">Explain the main idea</button>
+                <button data-question="What are the most important points?">Important points</button>
+                <button data-question="Create a short revision summary">Create a summary</button>
+              </div>
+            </div>
+          </div>
+          <form class="chat-composer" id="chatForm">
+            <textarea id="chatInput" rows="1" placeholder="Ask a follow-up question..." aria-label="Chat message"></textarea>
+            <button class="send-button" type="submit" aria-label="Send message">
+              <svg viewBox="0 0 24 24"><path d="M12 19V5M7 10l5-5 5 5"/></svg>
+            </button>
+          </form>
+        </div>
+      </div>
+    </section>
+  </template>
+  <p>Opening AI chat… <a href="index.html#chat">Continue</a></p>
+</body>
+</html>

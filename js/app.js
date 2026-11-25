@@ -11,6 +11,26 @@
   var flashcardIndex = 0;
   var showingAnswer = false;
   var activeNoteTab = "smartNotes";
+  var focusMinutes = Number(SBLoad("sb_minutes", 25));
+  if (!Number.isInteger(focusMinutes) || focusMinutes < 1 || focusMinutes > 180) focusMinutes = 25;
+  var timerModes = ["focus", "short", "long"];
+  var savedTimer = SBLoad("sb_focus_timer", {}) || {};
+  var initialMode = timerModes.indexOf(savedTimer.mode) >= 0 ? savedTimer.mode : "focus";
+  var initialDuration = Number(savedTimer.duration);
+  if (!Number.isInteger(initialDuration) || initialDuration < 1 || initialDuration > 180) {
+    initialDuration = initialMode === "short" ? 5 : initialMode === "long" ? 15 : focusMinutes;
+  }
+  var timerState = {
+    mode: initialMode,
+    duration: initialDuration,
+    remaining: Number.isInteger(Number(savedTimer.remaining)) && Number(savedTimer.remaining) >= 0
+      ? Math.min(Number(savedTimer.remaining), initialDuration * 60) : initialDuration * 60,
+    running: savedTimer.running === true && Number.isFinite(Number(savedTimer.endAt)) && Number(savedTimer.endAt) > 0,
+    endAt: Number(savedTimer.endAt) || 0
+  };
+  if (timerState.running) timerState.remaining = Math.max(0, Math.ceil((timerState.endAt - Date.now()) / 1000));
+  var timerInterval = null;
+  var focusModeActive = false;
 
   function SBLoad(key, fallback) {
     try {
@@ -82,26 +102,162 @@
 
     var titles = {
       dashboard: ["Workspace", "Good " + greeting()],
+      focus: ["Focus", "Focus Timer"],
       materials: ["Library", "My Study Materials"],
       flashcards: ["Practice", "Flashcards"],
       notes: ["Resources", "Smart Notes"],
+      importantNotes: ["Revision", "Important Questions"],
       chat: ["Assistant", "AI Chat"],
       settings: ["Preferences", "Settings"]
     };
     document.getElementById("pageEyebrow").textContent = titles[viewName][0];
     document.getElementById("pageTitle").textContent = titles[viewName][1];
+    window.history.replaceState(null, "", viewName === "dashboard"
+      ? window.location.pathname + window.location.search : "#" + viewName);
+    if (viewName !== "focus" && focusModeActive) {
+      focusModeActive = false;
+      document.body.classList.remove("focus-active");
+      document.getElementById("focusModeButton").setAttribute("aria-pressed", "false");
+      document.getElementById("focusModeButton").textContent = "Enter focus mode";
+    }
     document.getElementById("sidebar").classList.remove("open");
 
     if (viewName === "flashcards") renderFlashcards();
     if (viewName === "notes") renderNotes();
+    if (viewName === "importantNotes") renderImportantQuestions();
     if (viewName === "chat") renderChat();
+    if (viewName === "focus") renderTimer();
   }
 
   function greeting() {
     var hour = new Date().getHours();
-    if (hour < 12) return "morning";
-    if (hour < 18) return "afternoon";
-    return "evening";
+    if (hour < 12) return "morning!";
+    if (hour < 18) return "afternoon!";
+    return "evening!";
+  }
+
+  function durationForMode(mode) {
+    if (mode === "short") return 5;
+    if (mode === "long") return 15;
+    return focusMinutes;
+  }
+
+  function saveTimerState() {
+    save("sb_focus_timer", timerState);
+  }
+
+  function renderTimer() {
+    var display = document.getElementById("timerDisplay");
+    var minutes = Math.floor(timerState.remaining / 60);
+    var seconds = timerState.remaining % 60;
+    display.textContent = String(minutes).padStart(2, "0") + ":" + String(seconds).padStart(2, "0");
+    var circumference = 2 * Math.PI * 88;
+    var progress = timerState.duration > 0
+      ? (timerState.duration * 60 - timerState.remaining) / (timerState.duration * 60) : 0;
+    document.getElementById("timerProgress").style.strokeDasharray = String(circumference);
+    document.getElementById("timerProgress").style.strokeDashoffset = String(circumference * progress);
+    document.getElementById("timerModeLabel").textContent =
+      timerState.mode === "short" ? "SHORT BREAK" : timerState.mode === "long" ? "LONG BREAK" : "FOCUS SESSION";
+    var durationInput = document.getElementById("focusDuration");
+    if (document.activeElement !== durationInput) durationInput.value = focusMinutes;
+    document.getElementById("startTimer").disabled = timerState.running || timerState.remaining === 0;
+    document.getElementById("pauseTimer").disabled = !timerState.running;
+    document.getElementById("startTimer").textContent = timerState.mode === "focus" ? "Start focus" : "Start break";
+    document.querySelectorAll("[data-timer-mode]").forEach(function (button) {
+      var selected = button.dataset.timerMode === timerState.mode;
+      button.classList.toggle("active", selected);
+      button.setAttribute("aria-pressed", selected ? "true" : "false");
+    });
+    updateFocusStats();
+  }
+
+  function updateFocusStats() {
+    document.getElementById("focusSessionCount").textContent = Number(SBLoad("sb_sessions", 0)) || 0;
+    document.getElementById("focusMinutesCount").textContent = Number(SBLoad("sb_focus_minutes_total", 0)) || 0;
+  }
+
+  function setTimerMode(mode) {
+    if (timerModes.indexOf(mode) < 0) return;
+    window.clearInterval(timerInterval);
+    timerInterval = null;
+    timerState.mode = mode;
+    timerState.duration = durationForMode(mode);
+    timerState.remaining = timerState.duration * 60;
+    timerState.running = false;
+    timerState.endAt = 0;
+    document.getElementById("timerStatus").textContent =
+      mode === "focus" ? "Ready when you are." : "Take a moment to recharge.";
+    saveTimerState();
+    renderTimer();
+  }
+
+  function finishTimer() {
+    window.clearInterval(timerInterval);
+    timerInterval = null;
+    timerState.running = false;
+    timerState.remaining = 0;
+    timerState.endAt = 0;
+    if (timerState.mode === "focus") {
+      var sessions = (Number(SBLoad("sb_sessions", 0)) || 0) + 1;
+      var totalMinutes = (Number(SBLoad("sb_focus_minutes_total", 0)) || 0) + timerState.duration;
+      save("sb_sessions", sessions);
+      save("sb_focus_minutes_total", totalMinutes);
+      document.getElementById("timerStatus").textContent = "Focus session complete. Take a short break.";
+      showToast("Focus session complete. Nice work!");
+    } else {
+      document.getElementById("timerStatus").textContent = "Break complete. Ready to focus again?";
+      showToast("Break complete. You're ready for another session.");
+    }
+    saveTimerState();
+    renderTimer();
+  }
+
+  function tickTimer() {
+    timerState.remaining = Math.max(0, Math.ceil((timerState.endAt - Date.now()) / 1000));
+    if (timerState.remaining === 0) {
+      finishTimer();
+      return;
+    }
+    renderTimer();
+  }
+
+  function startTimer() {
+    if (timerState.running || timerState.remaining === 0) return;
+    timerState.running = true;
+    timerState.endAt = Date.now() + timerState.remaining * 1000;
+    document.getElementById("timerStatus").textContent =
+      timerState.mode === "focus" ? "You're doing great. Stay with it." : "Enjoy your well-earned pause.";
+    saveTimerState();
+    renderTimer();
+    timerInterval = window.setInterval(tickTimer, 1000);
+  }
+
+  function pauseTimer() {
+    if (!timerState.running) return;
+    timerState.remaining = Math.max(0, Math.ceil((timerState.endAt - Date.now()) / 1000));
+    if (timerState.remaining === 0) {
+      finishTimer();
+      return;
+    }
+    window.clearInterval(timerInterval);
+    timerInterval = null;
+    timerState.running = false;
+    timerState.endAt = 0;
+    document.getElementById("timerStatus").textContent = "Paused. Pick it up when you're ready.";
+    saveTimerState();
+    renderTimer();
+  }
+
+  function resetTimer() {
+    window.clearInterval(timerInterval);
+    timerInterval = null;
+    timerState.duration = durationForMode(timerState.mode);
+    timerState.remaining = timerState.duration * 60;
+    timerState.running = false;
+    timerState.endAt = 0;
+    document.getElementById("timerStatus").textContent = "Timer reset. Ready when you are.";
+    saveTimerState();
+    renderTimer();
   }
 
   function relativeDate(timestamp) {
@@ -123,7 +279,7 @@
       var name = escapeHtml(material.name);
       return '<article class="material-card" data-material-id="' + material.id + '">' +
         '<div class="material-card-head"><span class="file-icon ' + (material.type === "text" ? "text" : "") + '">' +
-        '<svg viewBox="0 0 24 24"><path d="M6 2h8l4 4v16H6z"/><path d="M14 2v5h5M9 12h6M9 16h6"/></svg></span></div>' +
+        '<img src="icons/materials.png" alt=""></span></div>' +
         '<h3>' + name + '</h3><p>' + (material.type === "pdf" ? "PDF" : "Pasted text") + ' · ' + relativeDate(material.createdAt) + '</p>' +
         '<div class="material-card-footer"><span class="ready-pill ' + (ready ? "" : "pending") + '">' + (ready ? "Ready" : "Processing") + '</span><span aria-hidden="true">→</span></div></article>';
     }
@@ -157,7 +313,7 @@
     save(STORAGE, materials);
     updateStats();
     renderMaterials();
-    ["flashcardMaterial", "notesMaterial", "chatMaterial"].forEach(fillMaterialSelect);
+    ["flashcardMaterial", "notesMaterial", "importantQuestionsMaterial", "chatMaterial"].forEach(fillMaterialSelect);
   }
 
   function openUpload() {
@@ -322,13 +478,28 @@
     content.innerHTML = html;
   }
 
+  function renderImportantQuestions() {
+    fillMaterialSelect("importantQuestionsMaterial");
+    var material = getActiveMaterial();
+    var content = document.getElementById("importantQuestionsContent");
+    var questions = material && material.resources && Array.isArray(material.resources.importantQuestions)
+      ? material.resources.importantQuestions : [];
+    if (!questions.length) {
+      content.innerHTML = "<h3>No questions yet</h3><p>Add study material to generate important questions.</p>";
+      return;
+    }
+    content.innerHTML = "<h3>Important questions</h3><ol>" + questions.map(function (question) {
+      return "<li>" + escapeHtml(question) + "</li>";
+    }).join("") + "</ol>";
+  }
+
   function renderChat() {
     fillMaterialSelect("chatMaterial");
     var material = getActiveMaterial();
     var messages = material ? (chatMessages[material.id] || []) : [];
     var box = document.getElementById("chatMessages");
     if (!messages.length) {
-      box.innerHTML = '<div class="chat-empty"><span class="ai-orb"><svg viewBox="0 0 24 24"><path d="m12 3 1.7 4.3L18 9l-4.3 1.7L12 15l-1.7-4.3L6 9l4.3-1.7L12 3Z"/></svg></span><h3>Ask about your study material</h3><p>Get a clear answer in plain language.</p><div class="suggestion-grid"><button data-question="Explain the main idea in simple words">Explain the main idea</button><button data-question="What are the most important points?">Important points</button><button data-question="Create a short revision summary">Create a summary</button></div></div>';
+      box.innerHTML = '<div class="chat-empty"><span class="ai-orb"><img src="icons/ai_chat.png" alt=""></span><h3>Ask about your study material</h3><p>Get a clear answer in plain language.</p><div class="suggestion-grid"><button data-question="Explain the main idea in simple words">Explain the main idea</button><button data-question="What are the most important points?">Important points</button><button data-question="Create a short revision summary">Create a summary</button></div></div>';
       return;
     }
     box.innerHTML = messages.map(function (message) {
@@ -472,13 +643,14 @@
   document.getElementById("nextCard").addEventListener("click", function () { moveCard(1); });
   document.getElementById("knownCard").addEventListener("click", function () { moveCard(1); showToast("Marked for progress"); });
   document.getElementById("reviewCard").addEventListener("click", function () { moveCard(1); showToast("Added to review"); });
-  ["flashcardMaterial", "notesMaterial", "chatMaterial"].forEach(function (selectId) {
+  ["flashcardMaterial", "notesMaterial", "importantQuestionsMaterial", "chatMaterial"].forEach(function (selectId) {
     document.getElementById(selectId).addEventListener("change", function (event) {
       activeMaterialId = event.target.value;
       flashcardIndex = 0;
       showingAnswer = false;
       if (selectId === "flashcardMaterial") renderFlashcards();
       if (selectId === "notesMaterial") renderNotes();
+      if (selectId === "importantQuestionsMaterial") renderImportantQuestions();
       if (selectId === "chatMaterial") renderChat();
     });
   });
@@ -505,6 +677,52 @@
     save(CHAT_STORAGE, chatMessages);
     renderChat();
     updateStats();
+  });
+
+  document.querySelectorAll("[data-timer-mode]").forEach(function (button) {
+    button.addEventListener("click", function () { setTimerMode(button.dataset.timerMode); });
+  });
+  document.getElementById("startTimer").addEventListener("click", startTimer);
+  document.getElementById("pauseTimer").addEventListener("click", pauseTimer);
+  document.getElementById("resetTimer").addEventListener("click", resetTimer);
+  document.getElementById("timerDurationForm").addEventListener("submit", function (event) {
+    event.preventDefault();
+    var input = document.getElementById("focusDuration");
+    var error = document.getElementById("durationError");
+    var raw = input.value.trim();
+    var minutes = Number(raw);
+    error.textContent = "";
+    input.classList.remove("invalid");
+    if (!raw) error.textContent = "Enter a focus length.";
+    else if (!Number.isInteger(minutes)) error.textContent = "Use a whole number of minutes.";
+    else if (minutes < 1 || minutes > 180) error.textContent = "Choose between 1 and 180 minutes.";
+    if (error.textContent) {
+      input.classList.add("invalid");
+      return;
+    }
+    focusMinutes = minutes;
+    save("sb_minutes", focusMinutes);
+    setTimerMode("focus");
+    document.getElementById("timerStatus").textContent = "Focus length set to " + minutes + " minutes.";
+  });
+  document.getElementById("focusDuration").addEventListener("input", function () {
+    document.getElementById("durationError").textContent = "";
+    this.classList.remove("invalid");
+  });
+  document.getElementById("focusModeButton").addEventListener("click", function () {
+    focusModeActive = !focusModeActive;
+    document.body.classList.toggle("focus-active", focusModeActive);
+    this.setAttribute("aria-pressed", focusModeActive ? "true" : "false");
+    this.textContent = focusModeActive ? "Exit focus mode" : "Enter focus mode";
+  });
+  document.addEventListener("keydown", function (event) {
+    if (event.key === "Escape" && focusModeActive) {
+      focusModeActive = false;
+      document.body.classList.remove("focus-active");
+      var focusModeButton = document.getElementById("focusModeButton");
+      focusModeButton.setAttribute("aria-pressed", "false");
+      focusModeButton.textContent = "Enter focus mode";
+    }
   });
 
   document.querySelectorAll(".theme-option").forEach(function (button) {
@@ -551,5 +769,18 @@
   });
 
   refreshAll();
-  setView("dashboard");
+  var requestedView = window.location.hash.slice(1);
+  var availableViews = ["dashboard", "focus", "materials", "flashcards", "notes", "importantNotes", "chat", "settings"];
+  setView(availableViews.indexOf(requestedView) >= 0 ? requestedView : "dashboard");
+  if (timerState.running) {
+    if (timerState.remaining === 0) {
+      finishTimer();
+    } else {
+      document.getElementById("timerStatus").textContent =
+        timerState.mode === "focus" ? "You're doing great. Stay with it." : "Enjoy your well-earned pause.";
+      timerInterval = window.setInterval(tickTimer, 1000);
+    }
+  } else {
+    renderTimer();
+  }
 })();

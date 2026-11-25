@@ -17,11 +17,13 @@
 SchoolBook is a beginner-friendly, browser-based study assistant inspired by NotebookLM-style workflows. Add a PDF or paste study text, then organise the material into useful learning resources and ask focused questions through an AI chat.
 
 The frontend remains plain HTML, CSS, and JavaScript. A small Node.js server keeps Gemini credentials private and acts as the API bridge.
+The dashboard keeps the shared shell, while each study tool's page markup lives in its matching HTML file and is loaded by `js/view-loader.js`.
 
 ## Main features
 
 - Upload PDFs or paste text directly
 - Generate flashcards and study progress
+- Use focus and break timers with session tracking and immersive focus mode
 - Create concise smart notes
 - Extract key points and important questions
 - Produce topic summaries

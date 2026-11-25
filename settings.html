@@ -1,1 +1,39 @@
-<!DOCTYPE html><html><head><meta charset="UTF-8"><meta http-equiv="refresh" content="0; url=index.html"><title>SchoolBook</title></head><body><a href="index.html">Open SchoolBook</a></body></html>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Manage SchoolBook appearance and local study data.">
+  <meta http-equiv="refresh" content="0; url=index.html#settings">
+  <link rel="shortcut icon" href="icons/logo.png" type="image/x-icon">
+  <title>Settings — SchoolBook</title>
+</head>
+<body>
+  <template data-app-view>
+    <section class="view" id="settingsView">
+      <div class="settings-grid">
+        <section class="settings-card">
+          <h2>Appearance</h2>
+          <p>Choose how SchoolBook looks on this device.</p>
+          <div class="theme-options">
+            <button class="theme-option" data-theme-choice="light"><span class="theme-preview light-preview"></span><span>Light</span></button>
+            <button class="theme-option" data-theme-choice="dark"><span class="theme-preview dark-preview"><img src="icons/night-mode.png" alt=""></span><span>Dark</span></button>
+          </div>
+        </section>
+        <section class="settings-card">
+          <h2>AI connection</h2>
+          <p>Gemini is called only through this server. The API key stays in the server environment.</p>
+          <div class="connection-row"><span id="apiStatusDot"></span><strong id="apiStatusText">Checking connection...</strong></div>
+        </section>
+        <section class="settings-card">
+          <h2>Local data</h2>
+          <p><strong id="settingsMaterialCount">0</strong> materials stored in this browser.</p>
+          <p>API calls made this session: <strong id="apiCallCount">0</strong></p>
+          <button class="danger-button" id="clearData">Delete all study data</button>
+        </section>
+      </div>
+    </section>
+  </template>
+  <p>Opening settings… <a href="index.html#settings">Continue</a></p>
+</body>
+</html>

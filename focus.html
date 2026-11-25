@@ -1,1 +1,80 @@
-<!DOCTYPE html><html><head><meta charset="UTF-8"><meta http-equiv="refresh" content="0; url=index.html"><title>SchoolBook</title></head><body><a href="index.html">Open SchoolBook</a></body></html>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="SchoolBook focus timer and study breaks.">
+  <meta http-equiv="refresh" content="0; url=index.html#focus">
+  <link rel="shortcut icon" href="icons/logo.png" type="image/x-icon">
+  <title>Focus Timer — SchoolBook</title>
+</head>
+<body>
+  <template data-app-view>
+    <section class="view" id="focusView">
+      <div class="focus-intro">
+        <div>
+          <p class="section-label">Make room for deep work</p>
+          <h2>A little focus goes a long way.</h2>
+          <p>Choose a session, settle in, and give one thing your full attention.</p>
+        </div>
+        <button class="secondary-button focus-mode-toggle" id="focusModeButton" aria-pressed="false">Enter focus mode</button>
+      </div>
+      <div class="focus-layout">
+        <section class="timer-card" aria-label="Focus timer">
+          <div class="timer-modes" role="group" aria-label="Timer session type">
+            <button class="timer-mode active" data-timer-mode="focus" aria-pressed="true">Focus</button>
+            <button class="timer-mode" data-timer-mode="short" aria-pressed="false">Short break</button>
+            <button class="timer-mode" data-timer-mode="long" aria-pressed="false">Long break</button>
+          </div>
+          <div class="timer-dial">
+            <svg viewBox="0 0 200 200" aria-hidden="true">
+              <circle class="timer-track" cx="100" cy="100" r="88"></circle>
+              <circle class="timer-progress" id="timerProgress" cx="100" cy="100" r="88"></circle>
+            </svg>
+            <div class="timer-reading">
+              <span class="timer-mode-label" id="timerModeLabel">FOCUS SESSION</span>
+              <span class="timer-display" id="timerDisplay" role="timer" aria-label="Time remaining">25:00</span>
+              <span class="timer-status" id="timerStatus" aria-live="polite">Ready when you are.</span>
+            </div>
+          </div>
+          <div class="timer-controls">
+            <button class="secondary-button" id="resetTimer" aria-label="Reset timer">Reset</button>
+            <button class="primary-button timer-start" id="startTimer">Start focus</button>
+            <button class="secondary-button" id="pauseTimer" disabled>Pause</button>
+          </div>
+          <form class="timer-duration-form" id="timerDurationForm" novalidate>
+            <label for="focusDuration">Focus length</label>
+            <div class="duration-input-wrap">
+              <input id="focusDuration" type="number" min="1" max="180" step="1" inputmode="numeric" aria-describedby="durationHint durationError">
+              <span>minutes</span>
+              <button class="text-button" type="submit">Set</button>
+            </div>
+            <span class="duration-hint" id="durationHint">Choose any length from 1 to 180 minutes.</span>
+            <span class="duration-error" id="durationError" role="alert"></span>
+          </form>
+        </section>
+        <aside class="focus-side">
+          <section class="focus-stat-card">
+            <span class="focus-side-icon"><svg viewBox="0 0 24 24"><path d="M12 3v3M5.6 5.6l2.1 2.1M3 12h3M5.6 18.4l2.1-2.1M12 18v3M18.4 18.4l-2.1-2.1M18 12h3M18.4 5.6l-2.1 2.1"/><circle cx="12" cy="12" r="5"/></svg></span>
+            <p class="section-label">Sessions completed</p>
+            <strong id="focusSessionCount">0</strong>
+            <span>Every session is a step forward.</span>
+          </section>
+          <section class="focus-stat-card">
+            <span class="focus-side-icon violet"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg></span>
+            <p class="section-label">Time well spent</p>
+            <strong><span id="focusMinutesCount">0</span><small> min</small></strong>
+            <span>Your completed focus time.</span>
+          </section>
+          <section class="focus-tip">
+            <p class="section-label">A gentle reminder</p>
+            <h3>One task at a time.</h3>
+            <p>Close a few tabs, silence notifications, and let your next session be enough.</p>
+          </section>
+        </aside>
+      </div>
+    </section>
+  </template>
+  <p>Opening the focus timer… <a href="index.html#focus">Continue</a></p>
+</body>
+</html>
